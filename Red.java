@@ -1,47 +1,75 @@
 package u1529313;
+
 import robocode.*;
+import robocode.util.Utils;
+import robocode.Rules;
+import java.awt.Color;
+import java.util.HashMap;
+import java.awt.geom.Point2D;
+
+import u1529313.modes.RedMode;
+import u1529313.modes.RedWallCrawler;
+import u1529313.modes.RedPatternMatch;
+
+/**
+ * Loop:
+ * 1. repaint
+ * 2. robot code executed then paused
+ * 3. time = time + 1
+ * 4. bullets move and check collisions
+ * 5. robots move (gun, radar, heading, accel, vel, dist)
+ * 6. robots perform scans
+ * 7. robots are presumed to take new action
+ * 8. reach robot processes its event queue
+ */
 
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 
 public class Red extends Robot {
-    /**
-     * run: My Robot's default behavior
-     */
+
+    final public double power = 1.0; // small damage but less 
+    final public double bulletSpeed = Rules.getBulletSpeed(power);
+
+    boolean peek; // dont turn if there's a robot there
+    double moveAmount; // how much we move
+
+    RedMode rmode;
+
     public void run() {
-        // Initialization of the robot should be put here
-        // Robot main loop
-        while(true) {
-            // Replace the next 4 lines with any behavior you would like
-            ahead(100);
-            turnGunRight(360);
-            back(100);
-            turnGunRight(360);
+        setUI();
+
+        if (getNumSentries() == 0 && getOthers() > 1) {
+            rmode = new RedWallCrawler(this);
+        } else if (getOthers() == 1) {
+            rmode = new RedPatternMatch(this);
+        }
+
+        rmode.executeBeforeLoop();
+
+        while (true) {
+            rmode.executeMainLoop();
         }
     }
 
-    /**
-     * onScannedRobot: What to do when you see another robot
-     */
     public void onScannedRobot(ScannedRobotEvent e) {
-        // Replace the next line with any behavior you would like
-        fire(1);
+        rmode.executeScannedRobot(e);
     }
 
-    /**
-     * onHitByBullet: What to do when you're hit by a bullet
-     */
-    public void onHitByBullet(HitByBulletEvent e) {
-        // Replace the next line with any behavior you would like
-        back(10);
+    public void onHitRobot(HitRobotEvent e) {
+        rmode.executeHitRobot(e);
+        // for now do nothing
+        // if (e.getBearing() > -90 && e.getBearing() < 90)
+        // {
+        //     back(100);
+        // }
+        // else
+        // {
+        //     ahead(100);
+        // }
     }
 
-    /**
-     * onHitWall: What to do when you hit a wall
-     */
-    public void onHitWall(HitWallEvent e) {
-        // Replace the next line with any behavior you would like
-        back(20);
+    public void setUI() {
+        setBodyColor(Color.black);
+        setGunColor(Color.black);
     }
-
-    // Many more events are possible! Consult the API
 }
