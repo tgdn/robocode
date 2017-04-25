@@ -5,38 +5,38 @@ import robocode.util.Utils;
 
 import u1529313.Red;
 import u1529313.modes.RedMode;
-import u1529313.modes.ScannedLog;
+import u1529313.utils.ScannedLog;
 
 public class RedWallCrawler extends RedMode {
 
-	boolean peek;
-	double moveAmount;
+    boolean peek;
+    double moveAmount;
 
-	public RedWallCrawler(Red robot) {
-		init(robot);
-	}
+    public RedWallCrawler(Red robot) {
+        super(robot);
+    }
 
-	public void executeBeforeLoop() {
-		peek = false;
-		moveAmount = Math.max(r.getBattleFieldWidth(), r.getBattleFieldHeight());
+    public void executeBeforeLoop() {
+        peek = false;
+        moveAmount = Math.max(r.getBattleFieldWidth(), r.getBattleFieldHeight());
 
-		r.turnLeft(r.getHeading() % 90);
-		r.ahead(moveAmount);
+        r.turnLeft(r.getHeading() % 90);
+        r.ahead(moveAmount);
 
-		peek = true;
-		r.turnGunRight(90);
-		r.turnRight(90);
-	}
+        peek = true;
+        r.turnGunRight(90);
+        r.turnRight(90);
+    }
 
-	public void executeMainLoop() {
-		peek = true;
-		r.ahead(moveAmount);
-		peek = false;
-		r.turnRight(90);
-	}
+    public void executeMainLoop() {
+        peek = true;
+        r.ahead(moveAmount);
+        peek = false;
+        r.turnRight(90);
+    }
 
-	public void executeScannedRobot(ScannedRobotEvent e) {
-		if (peek) {
+    public void executeScannedRobot(ScannedRobotEvent e) {
+        if (peek) {
             r.scan();
         }
 
@@ -53,5 +53,5 @@ public class RedWallCrawler extends RedMode {
         r.turnGunRight(Utils.normalRelativeAngleDegrees(
             r.getHeading() - r.getGunHeading() + 90
         ));
-	}
+    }
 }

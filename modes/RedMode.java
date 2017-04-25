@@ -6,19 +6,19 @@ import robocode.util.Utils;
 import u1529313.Red;
 
 public abstract class RedMode {
-	protected Red r; // our robot
+    protected Red r; // our robot
 
-	protected void init(Red robot)  {
-		r = robot;
-	}
+    public RedMode(Red robot) {
+        r = robot;
+    }
 
-	public void executeBeforeLoop() {}
+    public void executeBeforeLoop() {}
 
-	public void executeMainLoop() {}
+    public void executeMainLoop() {}
 
-	public void executeScannedRobot(ScannedRobotEvent e) {
-		r.fire(r.power);
-	}
+    public void executeScannedRobot(ScannedRobotEvent e) {
+        r.fire(r.power);
+    }
 
-	public void executeHitRobot(HitRobotEvent e) {}
+    public void executeHitRobot(HitRobotEvent e) {}
 }
